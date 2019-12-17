@@ -1,4 +1,4 @@
-# flutter_persistent_cloud
+# flutter_persistent_auth
 
 The original "flutter create" app re-written entirely with Stateless Widgets, using Provider to hold the app-state data. And now, also including:
 - persistent storage for the app state, via Google Cloud Firestore
