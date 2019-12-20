@@ -21,7 +21,7 @@ class MyDevice with ChangeNotifier {
     final devInfo = DeviceInfoPlugin();
     if (Platform.isAndroid) {
       final androidInfo = await devInfo.androidInfo;
-      _name = androidInfo.host;
+      _name = androidInfo.model;
     } else if (Platform.isIOS) {
       final iosInfo = await devInfo.iosInfo;
       _name = iosInfo.name;

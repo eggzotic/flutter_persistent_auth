@@ -1,5 +1,5 @@
-name: flutter_persistent_cloud
-description: The (Stateless) Flutter starter project, with persistent state via cloud-storage.
+name: flutter_persistent_auth
+description: The (Stateless) Flutter starter project, with persistent state & app-level auth via cloud-storage.
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -27,7 +27,10 @@ dependencies:
   cupertino_icons: ^0.1.2
 
   cloud_firestore: ^0.12.11
+  firebase_auth: ^0.15.2
   device_info: ^0.4.1+3
+  encrypt: ^3.3.1
+  shared_preferences: ^0.5.4+8
 
 dev_dependencies:
   flutter_test:

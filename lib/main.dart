@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Cloud Storage Demo',
+      title: 'Cloud Auth Demo',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       //  "Provider.of<CounterState>(context)" in it's build method.
       home: ChangeNotifierProvider(
         create: (context) => CounterState(),
-        child: MyHomePage(title: 'Cloud Storage Demo'),
+        child: MyHomePage(title: 'Cloud Auth Demo'),
       ),
     );
   }
@@ -39,77 +39,116 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
-  // This widget is the home page of your application. It is (now) stateless,
-  //  meaning that it may define "final" vars only. It may still be used for
-  //  a dynamic (changing) UI if it is passed dynamic data from outside and
-  //  the build method is re-run (which is precisely what happens in this App)
-  //
-  // Any data that can change over time can be defined in an outer scope (i.e.
-  //  higher up the tree)
-
   final String title;
 
   @override
   Widget build(BuildContext context) {
     //
-    // This method is rerun every time notifyListeners is called from the Provider.
+    // This method is rerun every time notifyListeners() is called from the Provider.
     //
     final counterState = Provider.of<CounterState>(context);
     //
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              counterState.hasError ? '' : counterState.isWaiting ? 'Please wait...' : 'The counter value is:',
-            ),
-            counterState.hasError
-                ? Text("Oops, something's wrong!")
-                : counterState.isWaiting
-                    ? CircularProgressIndicator()
-                    : Text(
-                        '${counterState.value}',
-                        style: Theme.of(context).textTheme.display1,
-                      ),
-            (counterState.hasError || counterState.isWaiting)
-                ? Text('')
-                : Column(
-                    children: [
-                      Text('last changed by: ${counterState.lastUpdatedByDevice}'),
-                      SizedBox(height: 16.0),
-                      Text('(This device: ${counterState.myDevice})'),
-                    ],
-                  ),
-          ],
-        ),
-      ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          FloatingActionButton(
-            child: Icon(Icons.undo),
-            // colours indicate when the button is inactive (i.e when counterState is waiting)
-            backgroundColor: counterState.isWaiting
-                ? Theme.of(context).buttonColor
-                : Theme.of(context).floatingActionButtonTheme.backgroundColor,
-            // the button action is disabled when counterState is waiting
-            onPressed: counterState.isWaiting ? null : counterState.reset,
-          ),
-          FloatingActionButton(
-            child: Icon(Icons.add),
-            // colours indicate when the button is inactive (i.e when counterState is waiting)
-            backgroundColor: (counterState.isWaiting || counterState.hasError)
-                ? Theme.of(context).buttonColor
-                : Theme.of(context).floatingActionButtonTheme.backgroundColor,
-            // the button action is disabled when counterState is waiting
-            onPressed: (counterState.isWaiting || counterState.hasError) ? null : counterState.increment,
-          ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(counterState.authIsValid ? Icons.lock_outline : Icons.lock_open),
+            onPressed: counterState.isWaiting
+                ? null
+                : () {
+                    counterState.toggleAuth();
+                  },
+            disabledColor: Colors.white.withOpacity(0.5),
+          )
         ],
       ),
+      body: counterState.hasError
+          ? Center(child: Text("Oops, something's wrong!"))
+          : counterState.isWaiting
+              ? Center(
+                  child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text('Please wait...'),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(),
+                    ),
+                  ],
+                ))
+              : !counterState.authIsValid
+                  ? Center(
+                      child: RaisedButton(
+                        child: Text('Sign-in'),
+                        color: Colors.blue,
+                        textColor: Colors.white,
+                        onPressed: () => counterState.toggleAuth(),
+                      ),
+                    )
+                  : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('The counter value is:'),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Card(
+                              elevation: 8.0,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                                child: Text(
+                                  '${counterState.value}',
+                                  style: Theme.of(context).textTheme.display1,
+                                ),
+                              ),
+                            ),
+                          ),
+                          (counterState.hasError || counterState.isWaiting)
+                              ? Text('')
+                              : Column(
+                                  children: [
+                                    Text('updated by device: ${counterState.lastUpdatedByDevice}'),
+                                    SizedBox(height: 8.0),
+                                    Text('and user: ${counterState.lastUpdatedByUser}'),
+                                  ],
+                                ),
+                        ],
+                      ),
+                    ),
+      floatingActionButton: counterState.authIsValid
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                FloatingActionButton(
+                  child: Icon(Icons.undo),
+                  // colours indicate when the button is inactive (i.e when counterState is waiting)
+                  backgroundColor: counterState.isWaiting
+                      ? Theme.of(context).buttonColor
+                      : Theme.of(context).floatingActionButtonTheme.backgroundColor,
+                  // the button action is disabled when counterState is waiting
+                  onPressed: counterState.isWaiting ? null : counterState.reset,
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text('${counterState.myDevice}'),
+                    SizedBox(height: 4.0),
+                    Text('${counterState.userName}'),
+                  ],
+                ),
+                FloatingActionButton(
+                  child: Icon(Icons.add),
+                  // colours indicate when the button is inactive (i.e when counterState is waiting)
+                  backgroundColor: (counterState.isWaiting || counterState.hasError)
+                      ? Theme.of(context).buttonColor
+                      : Theme.of(context).floatingActionButtonTheme.backgroundColor,
+                  // the button action is disabled when counterState is waiting
+                  onPressed: (counterState.isWaiting || counterState.hasError) ? null : counterState.increment,
+                ),
+              ],
+            )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
