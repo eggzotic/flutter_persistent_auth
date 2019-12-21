@@ -74,11 +74,11 @@ class MyAuthState with ChangeNotifier {
     // final mangledPass = encrypter.encrypt(dbPass, iv: iv);
     // print('encrypted password: ${mangledPass.base16}');
     // _password = dbPass;
-    // // 2. now copy-n-paste those printed strings from the console into the DB fields
+    // // 3. now copy-n-paste those printed strings from the console into the DB fields
     // //  (overwriting the previous plain-text values)
-    // // 3. then comment the above block
+    // // 4. then comment the above block
     //
-    // 4. and then uncomment this one, and re-start the app
+    // 5. and then uncomment this one, and re-start the app
     //  and we have no longer any copy of the plain-text values
     //  (neither in the code nor the DB)
     _username = encrypter.decrypt16(dbUser, iv: iv);
