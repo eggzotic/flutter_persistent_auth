@@ -11,7 +11,7 @@ class MyAuthState with ChangeNotifier {
   String _username;
   String _password;
   //
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _auth = FirebaseAuth.instance;
   static const _prevAuthKey = 'PreviouslyAuthenticatedAs';
   //
   // constructor
@@ -29,7 +29,7 @@ class MyAuthState with ChangeNotifier {
         if (prevUser == null) {
           // this situation occurs only if the app has been re-installed and was
           //  previously authenticated at the time the app was deleted.
-          //  iOS-only has this behaviour, as the auth session is stored in
+          //  iOS has this behaviour, as the auth session is stored in
           //  KeyChain and not cleared when the app is deleted. I want to start
           //  the app as signed-out in this case
           // must use this direct _auth.signOut() call - so that notifyListeners() is not called

@@ -1,9 +1,8 @@
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'my_device.dart';
-import 'my_auth.dart';
+import 'my_auth_state.dart';
 
 // this class contains all the state used in the sample app
 class CounterState with ChangeNotifier {
